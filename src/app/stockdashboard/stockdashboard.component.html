@@ -1,0 +1,157 @@
+<!-- <div  class="d-flex">   
+    <button   type="button" routerLink="/stock" routerLinkActive="true" > AddProduct  </button>
+
+<button   type="button" routerLink="/stockdashboard" routerLinkActive="true" > ViewStock </button> 
+
+<button   type="button" routerLink="/inentoryrequast" routerLinkActive="true" > inentoryrequast </button>
+</div> -->
+
+<p-toast></p-toast>
+
+<div class="card">
+
+    <p-toolbar styleClass="p-mb-4">
+        <ng-template pTemplate="left">
+<div class="container">
+            <div class="row">
+                <div class="col-2"> <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2"
+                (click)="openNew()"></button>
+                </div> 
+                <div class="col">
+            <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
+                (click)="deleteSelectedProducts()" [disabled]="!selectedProducts || !selectedProducts.length"></button>
+            </div> 
+                               <div class="col" style="padding: 8px;">Product Code</div>
+                    <div class="col">
+                         <p-dropdown [options]="pcodeList" (onChange)="getPcode(selectedCode)" [(ngModel)]="selectedCode" optionLabel="pcodeCount" [filter]="true" filterBy="productCode" [showClear]="true" placeholder="Select a Product">
+                        <ng-template pTemplate="selectedItem">
+                            <div class="flex align-items-center gap-2" *ngIf="selectedCode">
+                                <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [class]="'flag flag-' + selectedCode.productCode" style="width: 18px"/>
+                                <div>{{ selectedCode.pcodeCount  }} </div>
+                            </div>
+                        </ng-template>
+                        <ng-template let-country pTemplate="item">
+                            <div class="flex align-items-center gap-2">
+                                <img src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png" [class]="'flag flag-' + country.productCode" style="width: 18px"/>
+                                <div>{{ country.pcodeCount }} </div>
+                            </div>
+                        </ng-template>
+                    </p-dropdown></div>
+    
+                </div>
+                </div>
+        </ng-template>
+
+        <ng-template pTemplate="right">
+            <button pButton pRipple label="Logout" icon="pi pi-fw pi-power-off" class="p-button-danger logoutbtn p-mr-2"
+                (click)="logout()"></button>
+           
+        </ng-template>
+
+    </p-toolbar>
+
+    <p-table #dt [value]="products" [rows]="10" [paginator]="true"
+        [globalFilterFields]="['productName','productDescription','productCode','productCategory']"
+        [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                <h5 class="p-m-0">Manage Products</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <!-- <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                        placeholder="Search..." /> -->
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+
+                <th pSortableColumn="productName" style="min-width:15rem">Product Name </th>
+
+                <th pSortableColumn="productCode">Product Code </th>
+                <th pSortableColumn="productDescription" style="min-width:10rem">Product Qty</th>
+                <!-- <th pSortableColumn="productDescription" style="min-width:10rem">Stock</th> -->
+
+                <th>Action</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+            <tr>
+
+
+                <td>{{product.productName}}</td>
+                <td>{{product.productCode}}</td>
+                <td>{{product.quantity}}</td>
+                <!-- <td>{{product.inStock}}</td> -->
+              
+                <td>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                        (click)="editProduct(product)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                        (click)="deleteProduct(product)"></button>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                In total there are {{products ? products.length : 0 }} products.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="productDialog" [style]="{width: '650px'}" header="Product Details" [modal]="true"
+    styleClass="p-fluid">
+
+    <ng-template pTemplate="content">
+        <form [formGroup]="addProductForm" id="myform" (ngSubmit)="onSubmit()" class="stockform">
+            <!-- <div class="p-field">
+                <label for="name">Product Code</label>
+                <input type="text" pInputText formControlName="productCode"
+                    [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
+                <div *ngIf="submitted && f.productCode.errors" class="invalid-feedback">
+                    <div *ngIf="f.productCode.errors.required">Product Code is required</div>
+                </div>
+            </div> -->
+            <div class="p-field">
+                <label for="name">Product Name</label>
+                <input type="text" pInputText formControlName="productName"
+                    [ngClass]="{ 'is-invalid': submitted && f.productName.errors }" />
+                <div *ngIf="submitted && f.productName.errors" class="invalid-feedback">
+                    <div *ngIf="f.productName.errors.required">Product Name is required</div>
+                </div>
+            </div>
+            <div class="p-field">
+                <label for="name">Product Code</label>
+                <input type="text" pInputText formControlName="productCode"
+                    [ngClass]="{ 'is-invalid': submitted && f.productCode.errors }" />
+                <!-- <p-dropdown [options]="categoryOpt" formControlName="price" optionLabel="code"
+                    [ngClass]="{ 'is-invalid': submitted && f.price.errors }"></p-dropdown> -->
+                <div *ngIf="submitted && f.productCode.errors" class="invalid-feedback">
+                    <div *ngIf="f.productCode.errors.required">Product Code is required</div>
+                </div>
+            </div>
+            <div class="p-field">
+                <label for="name">Product Units</label>
+                <input type="text" pInputText formControlName="quantity"
+                    [ngClass]="{ 'is-invalid': submitted && f.quantity.errors }" />
+                <div *ngIf="submitted && f.quantity.errors" class="invalid-feedback">
+                    <div *ngIf="f.quantity.errors.required">Quantity On Hand is required</div>
+                </div>
+            </div>
+           
+            <input type="hidden" formControlName="productId"/>
+        </form>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-info" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Save" type="submit" form="myform" icon="pi pi-check"
+            class="p-button-success"></button>
+    </ng-template>
+
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

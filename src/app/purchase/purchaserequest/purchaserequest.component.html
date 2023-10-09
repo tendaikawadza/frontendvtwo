@@ -1,0 +1,33 @@
+ <div class="sales-boxes">
+    <p-table [value]="users" styleClass="p-datatable-gridlines" [tableStyle]="{ 'min-width': '50rem' }">
+      <ng-template pTemplate="header">
+          <tr>
+              <th>Request Name</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Qty</th>
+              <th>Action</th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-product>
+          <tr>
+         
+
+              <td>{{ product.requestName }}</td>
+              <td>{{ product.requestDate }}</td>
+              <td>{{ product.amount }}</td>
+              <td>{{ product.quantity }}</td>
+              
+              <td>
+              
+                 <p-button icon="pi pi-user-edit" (click)="editPurchase(product)" styleClass="p-button-rounded p-button-info"></p-button>&NonBreakingSpace;
+                  <p-button icon="pi pi-times" (click)="deleteUser(product)" styleClass="p-button-rounded p-button-danger"></p-button>
+     
+                </td>
+          </tr>
+      </ng-template>
+     
+    </p-table>
+           
+            
+          </div>
